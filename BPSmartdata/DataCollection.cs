@@ -19,10 +19,6 @@ namespace BPSmartdata
 
         private void TimerElapsed(object sender, ElapsedEventArgs e)
         {
-            // string[] lines = {DateTime.Now.ToString(), GetWinVersion()};
-            // File.AppendAllLines(@"E:\TUKE\Rider\BPSmartdata\BPSmartdata\out.txt", lines);
-            // Console.WriteLine($"{DateTime.Now.ToString()} | {GetWinVersion()}");
-
             GetSmartAttr();
         }
 
