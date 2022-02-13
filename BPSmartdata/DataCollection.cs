@@ -7,11 +7,11 @@ using System.Runtime.InteropServices;
 
 namespace BPSmartdata
 {
-    public class Heartbeat
+    public class DataCollection
     {
         private readonly Timer _timer;
 
-        public Heartbeat()
+        public DataCollection()
         {
             _timer = new Timer(1000) {AutoReset = true};
             _timer.Elapsed += TimerElapsed;

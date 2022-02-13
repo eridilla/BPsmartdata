@@ -9,18 +9,18 @@ namespace BPSmartdata
         {
             var exitCode = HostFactory.Run(x =>
             {
-                x.Service<Heartbeat>(s =>
+                x.Service<DataCollection>(s =>
                 {
-                    s.ConstructUsing(heartbeat => new Heartbeat());
-                    s.WhenStarted(heartbeat => heartbeat.Start());
-                    s.WhenStopped(heartbeat => heartbeat.Stop());
+                    s.ConstructUsing(dataCollection => new DataCollection());
+                    s.WhenStarted(dataCollection => dataCollection.Start());
+                    s.WhenStopped(dataCollection => dataCollection.Stop());
                 });
             
                 x.RunAsLocalSystem();
                 
-                x.SetServiceName("HeartbeatService");
-                x.SetDisplayName("Heartbeat Service");
-                x.SetDescription("asdf");
+                x.SetServiceName("SMARTDataCollectionService");
+                x.SetDisplayName("SMART Data Collection Service");
+                x.SetDescription("Service for collecting SMART data of storage drives");
             });
             
             int exitCodeValue = (int) Convert.ChangeType(exitCode, exitCode.GetTypeCode());
