@@ -82,14 +82,14 @@ namespace BPSmartdata
                 scope.Connect();
                 ObjectQuery query = new ObjectQuery("SELECT VendorSpecific FROM MSStorageDriver_ATAPISmartData");
                 ManagementObjectSearcher searcher = new ManagementObjectSearcher(scope, query);
-                byte spinRetryCount = 0x0A;
+                byte attributeID = 0x0A;
                 int delta = 12;
                 foreach (ManagementObject wmiObject in searcher.Get())
                 {
                     byte[] vendorSpecific = (byte[])wmiObject["VendorSpecific"];
                     for (int offset = 2; offset < vendorSpecific.Length; )
                     {
-                        if (vendorSpecific[offset] == spinRetryCount)
+                        if (vendorSpecific[offset] == attributeID)
                         {
                             IntPtr buffer = IntPtr.Zero;
                             try
@@ -100,9 +100,8 @@ namespace BPSmartdata
                                 Console.WriteLine("AttributeID {0}", attributeInfo.AttributeID);
                                 Console.WriteLine("Flags {0}", attributeInfo.Flags);
                                 Console.WriteLine("Value {0}", attributeInfo.Value);
-                                //if you want HEX values use this line
-                                // Console.WriteLine("Value {0}", BitConverter.ToString(attributeInfo.VendorData));
-                                //if you want INT values use this line
+                                //HEX Console.WriteLine("Value {0}", BitConverter.ToString(attributeInfo.VendorData));
+                                //INT
                                 Console.WriteLine("Data {0}", BitConverter.ToInt32(attributeInfo.VendorData, 0));
                             }
                             finally
