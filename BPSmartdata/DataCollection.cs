@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Timers;
@@ -7,12 +8,30 @@ using System.Runtime.InteropServices;
 
 namespace BPSmartdata
 {
+    
+    // https://raw.githubusercontent.com/sebhildebrandt/systeminformation/master/lib/index.d.ts  
+    // body: { id: String, data: sign({Object<os>, Object<disks>}, String<Token>)<JWT> }
+
     public class DataCollection
     {
         private readonly Timer _timer;
 
         public DataCollection()
         {
+            string currentDir = AppDomain.CurrentDomain.BaseDirectory;            
+            string configPath = System.IO.Path.Combine(currentDir, @"config.ini");
+            string absolutePath = Path.GetFullPath(configPath);
+            
+            string[] lines = System.IO.File.ReadAllLines(absolutePath);
+            
+            string[] split = lines[0].Split(' ');
+            
+            NumberFormatInfo provider = new NumberFormatInfo();
+            provider.NumberDecimalSeparator = ".";
+            provider.NumberGroupSeparator = ",";
+            double interval = Math.Round(Convert.ToDouble(split[4], provider) * 3600 * 1000);
+
+            //_timer = new Timer(interval) {AutoReset = true};
             _timer = new Timer(1000) {AutoReset = true};
             _timer.Elapsed += TimerElapsed;
         }
@@ -47,8 +66,8 @@ namespace BPSmartdata
 
                 ObjectQuery query = new ObjectQuery("SELECT Caption FROM win32_OperatingSystem");
                 ManagementObjectSearcher searcher = new ManagementObjectSearcher(scope, query);
-
                 ManagementObjectCollection queryCollection = searcher.Get();
+                
                 foreach (ManagementObject o in queryCollection)
                 {
                     result = o["Caption"].ToString();
@@ -97,12 +116,19 @@ namespace BPSmartdata
                                 buffer = Marshal.AllocHGlobal(delta);
                                 Marshal.Copy(vendorSpecific, offset, buffer, delta);
                                 attributeInfo = (Attribute)Marshal.PtrToStructure(buffer, typeof(Attribute));
-                                Console.WriteLine("AttributeID {0}", attributeInfo.AttributeID);
-                                Console.WriteLine("Flags {0}", attributeInfo.Flags);
-                                Console.WriteLine("Value {0}", attributeInfo.Value);
+
+                                File.AppendAllText(@"out.txt", String.Format("{0}\n", DateTime.Now.ToString()));
+                                File.AppendAllText(@"out.txt", String.Format("AttributeID {0}\n", attributeInfo.AttributeID));
+                                File.AppendAllText(@"out.txt", String.Format("Flags {0}\n", attributeInfo.Flags));
+                                File.AppendAllText(@"out.txt", String.Format("Value {0}\n", attributeInfo.Value));
+                                File.AppendAllText(@"out.txt", String.Format("Data {0}\n\n", BitConverter.ToInt32(attributeInfo.VendorData, 0)));
+
+                                //Console.WriteLine("AttributeID {0}", attributeInfo.AttributeID);
+                                //Console.WriteLine("Flags {0}", attributeInfo.Flags);
+                                //Console.WriteLine("Value {0}", attributeInfo.Value);
                                 //HEX Console.WriteLine("Value {0}", BitConverter.ToString(attributeInfo.VendorData));
                                 //INT
-                                Console.WriteLine("Data {0}", BitConverter.ToInt32(attributeInfo.VendorData, 0));
+                                //Console.WriteLine("Data {0}", BitConverter.ToInt32(attributeInfo.VendorData, 0));
                             }
                             finally
                             {
