@@ -15,25 +15,31 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_059944576E0D4AF8AB2CDC04F0A8FAC6"
+        "MsmKey" = "8:_21DD88DD590E4B5B97D9BC9B88CBC896"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_6CA7E05CD9764AFEB23D0D2ADB900ED9"
+        "MsmKey" = "8:_3F900B11E0C74AEABDF92ED3739B8B03"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_79733E38F2CE40DBA08191664548D865"
+        "MsmKey" = "8:_60489298CB374D7EB5333569390B3112"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_ED5470373BB540218050AF6421D37336"
+        "MsmKey" = "8:_66157BA3DF914B42BB234CF40C470EBE"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_8A5AC3D8B25F4CFF82EB7102AEDADF74"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -119,6 +125,34 @@
     {
         "CustomAction"
         {
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_639E519D76BF49C88529E00F5BB18FE8"
+            {
+            "Name" = "8:Publish Items from ServiceInstaller (Active)"
+            "Condition" = "8:"
+            "Object" = "8:_60489298CB374D7EB5333569390B3112"
+            "FileType" = "3:2"
+            "InstallAction" = "3:4"
+            "Arguments" = "8:uninstall [TARGETDIR]"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_D8152EC0_E6DF_470C_B8E0_E8B840C525E7"
+            "InstallerClass" = "11:FALSE"
+            "CustomActionData" = "8:"
+            }
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_8B634BACB593444989D3F02F0AA4EB11"
+            {
+            "Name" = "8:Publish Items from ServiceInstaller (Active)"
+            "Condition" = "8:"
+            "Object" = "8:_60489298CB374D7EB5333569390B3112"
+            "FileType" = "3:2"
+            "InstallAction" = "3:2"
+            "Arguments" = "8:[TARGETDIR]"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_84359E03_8FE1_4124_A07F_464F9D1A1413"
+            "InstallerClass" = "11:FALSE"
+            "CustomActionData" = "8:"
+            }
         }
         "DefaultFeature"
         {
@@ -144,29 +178,9 @@
         }
         "File"
         {
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_059944576E0D4AF8AB2CDC04F0A8FAC6"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3F900B11E0C74AEABDF92ED3739B8B03"
             {
-            "SourcePath" = "8:..\\BPSmartdata\\bin\\Debug\\net5.0\\UninstallService.bat"
-            "TargetName" = "8:UninstallService.bat"
-            "Tag" = "8:"
-            "Folder" = "8:_88C3E5EED5E0423D94A0FEF8B41AE3CF"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6CA7E05CD9764AFEB23D0D2ADB900ED9"
-            {
-            "SourcePath" = "8:..\\BPSmartdata\\bin\\Debug\\net5.0\\config.ini"
+            "SourcePath" = "8:..\\BPSmartdata\\config.ini"
             "TargetName" = "8:config.ini"
             "Tag" = "8:"
             "Folder" = "8:_88C3E5EED5E0423D94A0FEF8B41AE3CF"
@@ -184,10 +198,30 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_79733E38F2CE40DBA08191664548D865"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_66157BA3DF914B42BB234CF40C470EBE"
             {
-            "SourcePath" = "8:..\\BPSmartdata\\bin\\Debug\\net5.0\\InstallService.bat"
+            "SourcePath" = "8:..\\BPSmartdata\\InstallService.bat"
             "TargetName" = "8:InstallService.bat"
+            "Tag" = "8:"
+            "Folder" = "8:_88C3E5EED5E0423D94A0FEF8B41AE3CF"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8A5AC3D8B25F4CFF82EB7102AEDADF74"
+            {
+            "SourcePath" = "8:..\\BPSmartdata\\UninstallService.bat"
+            "TargetName" = "8:UninstallService.bat"
             "Tag" = "8:"
             "Folder" = "8:_88C3E5EED5E0423D94A0FEF8B41AE3CF"
             "Condition" = "8:"
@@ -259,9 +293,9 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:SMART Data Collector"
+        "ProductName" = "8:SMARTDataCollector"
         "ProductCode" = "8:{FA2235F3-9ADB-4A0D-8A5B-F00CD160AD4F}"
-        "PackageCode" = "8:{FEBDB1DD-AFCC-4331-B441-1B5065D70C8F}"
+        "PackageCode" = "8:{DC730897-6179-4E8D-921A-1EBB8EE23E3A}"
         "UpgradeCode" = "8:{1DEA9EC7-6DF3-4EE7-9BC9-CCB7A285C7C3}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
@@ -538,7 +572,7 @@
                 {
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_4C1C5BC5341F46E2BF3F10079301BD63"
                     {
-                    "Sequence" = "3:100"
+                    "Sequence" = "3:110"
                     "DisplayName" = "8:Finished"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
@@ -780,7 +814,7 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_ED5470373BB540218050AF6421D37336"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_21DD88DD590E4B5B97D9BC9B88CBC896"
             {
             "SourcePath" = "8:..\\BPSmartdata\\obj\\Debug\\net5.0\\apphost.exe"
             "TargetName" = "8:"
@@ -803,6 +837,34 @@
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:PublishItems"
             "OutputProjectGuid" = "8:{2E5C19C8-33C8-41A5-AE93-3C158407F4DE}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_60489298CB374D7EB5333569390B3112"
+            {
+            "SourcePath" = "8:..\\ServiceInstaller\\obj\\Debug\\net6.0\\apphost.exe"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_88C3E5EED5E0423D94A0FEF8B41AE3CF"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:PublishItems"
+            "OutputProjectGuid" = "8:{9AF3125E-0849-4F33-8866-6B0119BE9FAC}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {
