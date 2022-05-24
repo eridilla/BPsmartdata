@@ -24,11 +24,11 @@ namespace BPSmartdata
     
     public class SmartData
     {
-        public Ata_smart_attributes stats { get; set; }
+        public Ata_smart_attributes ata_smart_attributes { get; set; }
         
         public SmartData(AttributeCollection attributes)
         {
-            stats = new Ata_smart_attributes(attributes);
+            ata_smart_attributes = new Ata_smart_attributes(attributes);
         }
     }
 

@@ -11,6 +11,8 @@ using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Text;
 using Jose;
+using JWT.Algorithms;
+using JWT.Builder;
 using Newtonsoft.Json;
 
 namespace BPSmartdata
@@ -74,17 +76,25 @@ namespace BPSmartdata
                 layout[i] = new DiskLayoutData(disks[i]);
             }
 
-            byte[] secretKey = Encoding.ASCII.GetBytes("7858bce0547309111e1b89c2c2cd5abacfd61f55"); 
             
-            string encoded = Jose.JWT.Encode(new Data(os, layout), secretKey, JwsAlgorithm.HS256);
+            // byte[] secretKey = Encoding.UTF8.GetBytes("7858bce0547309111e1b89c2c2cd5abacfd61f55"); 
+            
+            // string encoded = Jose.JWT.Encode(new Data(os, layout), secretKey, JwsAlgorithm.HS256);
 
+            var encoded = JwtBuilder.Create()
+                                        .WithAlgorithm(new HMACSHA256Algorithm()) // symmetric
+                                        .WithSecret("56cd68c5332364351038e0018be9eb2d99c9c208")
+                                        .AddClaim("os", os)
+                                        .AddClaim("disks", layout)
+                                        .Encode();
+            
             using (var client = new HttpClient())
             {
                 var endpoint = new Uri("https://smart-tuke.herokuapp.com/api/sonda/smart");
                 var post = new Post()
                 {
-                    id = "55b09e26-7e79-4725-80e1-c496bfdbf00e",
-                    token = encoded
+                    id = "724f20a9-96a1-4650-b73a-f32209077871",
+                    data = encoded
                 };
                 var postJson = JsonConvert.SerializeObject(post);
                 var payload = new StringContent(postJson, Encoding.UTF8, "application/json");
@@ -380,6 +390,6 @@ namespace BPSmartdata
     public class Post
     {
         public string id { get; set; }
-        public string token { get; set; }
+        public string data { get; set; }
     }
 }
