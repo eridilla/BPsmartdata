@@ -10,20 +10,17 @@ using System.Management;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Text;
-using Jose;
 using JWT.Algorithms;
 using JWT.Builder;
 using Newtonsoft.Json;
 
 namespace BPSmartdata
 {
-    
-    // https://raw.githubusercontent.com/sebhildebrandt/systeminformation/master/lib/index.d.ts  
-    // body: { id: String, data: sign({Object<os>, Object<disks>}, String<Token>)<JWT> }
-
     public class DataCollection
     {
         private readonly Timer _timer;
+        private string id;
+        private string token;
 
         public DataCollection()
         {
@@ -40,33 +37,18 @@ namespace BPSmartdata
             provider.NumberGroupSeparator = ",";
             double interval = Math.Round(Convert.ToDouble(split[4], provider) * 3600 * 1000);
             
-            //_timer = new Timer(interval) {AutoReset = true};
-            _timer = new Timer(1000) {AutoReset = true};
+            split = lines[1].Split(' ');
+            id = split[3];
+            
+            split = lines[2].Split(' ');
+            token = split[3];
+
+            _timer = new Timer(interval) {AutoReset = true};
             _timer.Elapsed += TimerElapsed;
         }
 
         private void TimerElapsed(object sender, ElapsedEventArgs e)
         {
-            // OsData os = new OsData(GetWinVersion());
-            // List<Disk> disks = GetDisks();
-            // DiskLayoutData[] layout = new DiskLayoutData[disks.Count];
-            //
-            // for (int i = 0; i < disks.Count; i++)
-            // {
-            //     layout[i] = new DiskLayoutData(disks[i]);
-            // }
-            //
-            // byte[] secretKey = Encoding.ASCII.GetBytes("7858bce0547309111e1b89c2c2cd5abacfd61f55"); 
-            //
-            // string token = Jose.JWT.Encode(new Data(os, layout), secretKey, JwsAlgorithm.HS256);
-
-            
-        }
-
-        public void Start()
-        {
-            _timer.Start();
-            
             OsData os = new OsData(GetWinVersion());
             List<Disk> disks = GetDisks();
             DiskLayoutData[] layout = new DiskLayoutData[disks.Count];
@@ -75,15 +57,10 @@ namespace BPSmartdata
             {
                 layout[i] = new DiskLayoutData(disks[i]);
             }
-
             
-            // byte[] secretKey = Encoding.UTF8.GetBytes("7858bce0547309111e1b89c2c2cd5abacfd61f55"); 
-            
-            // string encoded = Jose.JWT.Encode(new Data(os, layout), secretKey, JwsAlgorithm.HS256);
-
             var encoded = JwtBuilder.Create()
-                                        .WithAlgorithm(new HMACSHA256Algorithm()) // symmetric
-                                        .WithSecret("56cd68c5332364351038e0018be9eb2d99c9c208")
+                                        .WithAlgorithm(new HMACSHA256Algorithm())
+                                        .WithSecret(token)
                                         .AddClaim("os", os)
                                         .AddClaim("disks", layout)
                                         .Encode();
@@ -93,15 +70,18 @@ namespace BPSmartdata
                 var endpoint = new Uri("https://smart-tuke.herokuapp.com/api/sonda/smart");
                 var post = new Post()
                 {
-                    id = "724f20a9-96a1-4650-b73a-f32209077871",
+                    id = this.id,
                     data = encoded
                 };
                 var postJson = JsonConvert.SerializeObject(post);
                 var payload = new StringContent(postJson, Encoding.UTF8, "application/json");
                 var result = client.PostAsync(endpoint, payload).Result.Content.ReadAsStringAsync().Result;
-
-                int ij = 0;
             }
+        }
+
+        public void Start()
+        {
+            _timer.Start();
         }
 
         public void Stop()
@@ -158,17 +138,13 @@ namespace BPSmartdata
         //     public String Model;
         //     public String Type;
         // }
-        
-        
-        
+
         public List<Disk> GetDisks()
         {
             var drives = new List<Disk>();
-            
             var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_DiskDrive");
-            ManagementObjectCollection c = searcher.Get();
 
-            foreach (ManagementObject drive in c)
+            foreach (ManagementObject drive in searcher.Get())
             {
                 var disk = new Disk();
 
@@ -179,10 +155,9 @@ namespace BPSmartdata
                 disk.Type = drive["InterfaceType"].ToString().Trim();
                 disk.Serial = drive["SerialNumber"].ToString().Trim();
 
-
                 foreach (var partition in new ManagementObjectSearcher(
                              "ASSOCIATORS OF {Win32_DiskDrive.DeviceID='" + drive.Properties["DeviceID"].Value
-                                                                          + "'} WHERE AssocClass = Win32_DiskDriveToDiskPartition").Get())
+                                    + "'} WHERE AssocClass = Win32_DiskDriveToDiskPartition").Get())
                 {
 
                     foreach (var disk2 in new ManagementObjectSearcher(
@@ -201,14 +176,7 @@ namespace BPSmartdata
                 {
                     drives.Add(disk);
                 }
-                
-                // Console.WriteLine("ID: {0}", drive["DeviceId"].ToString().Trim());
-                // Console.WriteLine("Index: {0}", Convert.ToInt32(drive["Index"].ToString().Trim()));
-                // Console.WriteLine("Model: {0}", drive["Model"].ToString().Trim());
-                // Console.WriteLine("Type: {0}", drive["InterfaceType"].ToString().Trim());
-                // Console.WriteLine("-----------------------------------------------------------------------------");
             }
-
             return drives;
         }
 
@@ -224,13 +192,12 @@ namespace BPSmartdata
                 disk.IsOK = (bool)m.Properties["PredictFailure"].Value == false;
             }
             
-            // drive.SmartAttributes.AddRange(Helper.GetSmartRegisters(Resource.SmartAttributes));
-            
             var collection = new AttributeCollection();
 
             try
             {
-                var splitOnCRLF = SmartAttributes.AttributeList.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                var splitOnCRLF = SmartAttributes.AttributeList.Split(
+                    Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                 foreach (var line in splitOnCRLF)
                 {
                     var splitLineOnComma = line.Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries);
@@ -258,12 +225,8 @@ namespace BPSmartdata
                     try
                     {
                         int id = bytes[i * 12 + 2];
-
-                        int flags = bytes[i * 12 + 4]; // least significant status byte, +3 most significant byte, but not used so ignored.
-                                                       //bool advisory = (flags & 0x1) == 0x0;
+                        int flags = bytes[i * 12 + 4]; 
                         bool failureImminent = (flags & 0x1) == 0x1;
-                        //bool onlineDataCollection = (flags & 0x2) == 0x2;
-
                         int value = bytes[i * 12 + 5];
                         int worst = bytes[i * 12 + 6];
                         int vendordata = BitConverter.ToInt32(bytes, i * 12 + 7);
@@ -280,7 +243,6 @@ namespace BPSmartdata
                     }
                     catch (Exception ex)
                     {
-                        // given key does not exist in attribute collection (attribute not in the dictionary of attributes)
                         File.AppendAllText(@"errorLog.txt", ex.Message);
                     }
                 }
@@ -298,8 +260,8 @@ namespace BPSmartdata
                         int id = bytes[i * 12 + 2];
                         int thresh = bytes[i * 12 + 3];
                         if (id == 0) continue;
-
                         var attr = disk.SmartAttributes.GetAttribute(id);
+                        
                         if (attr != null)
                         {
                             attr.Threshold = thresh;
@@ -307,7 +269,6 @@ namespace BPSmartdata
                     }
                     catch (Exception ex)
                     {
-                        // given key does not exist in attribute collection (attribute not in the dictionary of attributes)
                         File.AppendAllText(@"errorLog.txt", ex.Message);
                     }
                 }
@@ -373,16 +334,16 @@ namespace BPSmartdata
         //     
         // }
         
-        public static int ConvertStringHexToInt(string hex0x0)
+        public static int ConvertStringHexToInt(string hex)
         {
             try
             {
-                int value = (int) new System.ComponentModel.Int32Converter().ConvertFromString(hex0x0);
+                int value = (int) new System.ComponentModel.Int32Converter().ConvertFromString(hex);
                 return value;
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error converting hex value {hex0x0} to integer.", ex);
+                throw new Exception($"Error converting hex value {hex} to integer.", ex);
             }
         }
     }
